@@ -79,6 +79,12 @@ Resources:
 
 # RouteTable Associations
 # RouteTable Association 01
+  RouteTableAssociation01:
+    Type:  AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId:  !Ref  Subnet01
+      RouteTableId:  !Ref  RouteTable01
+      
 # NACLs
 ## NACL 01
 # NACL Associations
