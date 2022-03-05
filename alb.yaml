@@ -1,0 +1,23 @@
+AWSTemplateFormatVersion:  2010-09-09
+Description:  Template for Application Load Balancer.
+Parameters:
+  TagKey:
+    Type:  String
+    Default:  Name
+  TagValue:
+    Type:  String
+    Default:  my
+Resources:
+  Alb01:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Subnets:
+        - !Ref  
+      Scheme:  internet-facing
+      SecurityGroups:
+        - !ImportValue  
+      Tags:
+        - Key:  !Ref  TagKey
+          Value:  !Sub  ${TagValue} -alb-01
+          
+Outputs:
