@@ -51,6 +51,16 @@ Resources:
 
 # RouteTables
 ## RouteTable 01
+  RouteTable01:
+    Type:  AWS::EC2::RouteTable
+    Properties:
+      VpcId:  !Ref Vpc
+      Tags:
+        Name:  !Ref  Tagkey
+        Value:  !Ref  ${TagValuePrefix}-rtb01
+# RouteTable Route
+# RouteTable Route 01
+
 # RouteTable Associations
 # RouteTable Association 01
 # NACLs
