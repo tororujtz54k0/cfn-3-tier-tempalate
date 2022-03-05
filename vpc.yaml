@@ -22,6 +22,9 @@ Parameters:
   Tagkey:
     Type:  String
     Default:  Name
+  OutputPrefix:
+    Type:  String
+    Default:  my
   
 
 #---------------------------------#
@@ -127,3 +130,12 @@ Resources:
 #---------------------------------#
 # Outputs Section
 #---------------------------------#
+Outputs:
+  VpcIdOutput:
+    Value:  !Ref  Vpc
+    Export:
+      Name:  !Sub  ${OutputPrefix}-Vpc
+  Subnet01Output:
+    Value:  !Ref Subnet01
+    Export:
+      Name:  !Sub  ${OutputPrefix}-Subnet01
