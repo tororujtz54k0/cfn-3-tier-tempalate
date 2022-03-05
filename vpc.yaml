@@ -10,6 +10,9 @@ Parameters:
   CidrBlockVpc:
     Type:  String
     Default:  10.0.0.0/16
+  PublicSubnetDestinationCidrBlock:
+    Type:  String
+    Default:  0.0.0.0/0
   Subnet01CidrBlock:
     Type:  String
     Default:  10.0.0.0/24
@@ -35,7 +38,13 @@ Resources:
       Tags:
         - Key:  !Ref  Tagkey
           Value:  !Sub  ${TagValuePrefix}-vpc
-
+# Internet Gateway
+  Igw01:
+    Type:  AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key:  !Ref  Tagkey
+          Value:  !Ref  ${TagValuePrefix}-igw01
 # Subnets
 ## Subnet 01
   Subnet01:
@@ -58,8 +67,15 @@ Resources:
       Tags:
         Name:  !Ref  Tagkey
         Value:  !Ref  ${TagValuePrefix}-rtb01
+
 # RouteTable Route
 # RouteTable Route 01
+  RouteTableRoute01:
+    Type:  AWS::EC2::Route
+    Properties:
+      RouteTableId:  !Ref  RouteTable01
+      DestinationCidrBlock:  !Ref  PublicSubnetDestinationCidrBlock
+      GatewayId:  !Ref Igw01
 
 # RouteTable Associations
 # RouteTable Association 01
