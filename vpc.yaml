@@ -94,7 +94,25 @@ Resources:
     Tags:
       - Key:  !Ref  Tagkey
         Value:  !Sub  ${TagValuePrefix}-Nacl01
-        
+
+# NACL Entry
+  NaclInbound01:
+    Type:  AWS::EC2::NetworkAclEntry
+    Properties:
+      NetworkAclId:  !Ref  Nacl01
+      RuleNumber:  32760
+      Protocol:  -1
+      RuleAction:  allow
+      CidrBlock:  0.0.0.0/0
+  NaclOutbound01:
+    Type:  AWS::EC2::NetworkAclEntry
+    Properties:
+      NetworkAclId:  !Ref  Nacl01
+      Egress:  true
+      RuleNumber:  32760
+      Protocol:  -1
+      RuleAction:  allow
+      CidrBlock:  0.0.0.0/0
 # NACL Associations
 ## NACL Associations 01
 
