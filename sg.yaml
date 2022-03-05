@@ -1,0 +1,37 @@
+AWSTemplateFormatVersion:  2010-09-09
+Description:  Template for SecurityGroup.
+Parameters:
+  AllCidrIp:
+    Type:  String
+    Default:  0.0.0.0/0
+  HttpsPort:
+    Type:  String
+    Default:  443
+  TagKey:
+    Type:  String
+    Default:  Name
+  TagValue:
+    Type:  String
+    Default:  my
+  
+Resources:
+  AlSg01:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription:  "SG for Alb01"
+      SecurityGroupIngress:
+        - IpProtocol:  tcp
+          FromPort:  !Ref  HttpsPort
+          ToPort:  !Ref  HttpsPort
+          CidrIp:  !Ref  AllCidrIp
+      SecurityGroupEgress:
+        - IpProtocol:  tcp
+          FromPort:  !Ref  HttpsPort
+          ToPort:  !Ref  HttpsPort
+          CidrIp:  !Ref  AllCidrIp
+      VpcId:  !ImportValue  
+      Tags:
+        - Key:  !Ref  TagKey
+          Value:  !Sub  ${TagValue} -alb-sg01
+          
+Outputs:
