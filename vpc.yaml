@@ -113,8 +113,14 @@ Resources:
       Protocol:  -1
       RuleAction:  allow
       CidrBlock:  0.0.0.0/0
+
 # NACL Associations
 ## NACL Associations 01
+  NaclAssociation01:
+    Type:  AWS::EC2::SubnetNetworkAclAssociation
+    Properties:
+      SubnetId:  !Ref  Subnet01
+      NetworkAclId:  !Ref  Nacl01
 
 
 
