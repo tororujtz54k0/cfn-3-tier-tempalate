@@ -6,7 +6,13 @@ Description: 3 tier infra template.
 Parameters:
   AvailabilityZoneOption:
     Type:  CommaDelimitedList
-    Default:  ap-northeast-1c, ap-northeast-1a, ap-northeast-1d
+    Default:  ap-northeast-1c, ap-northeast-1a, ap-northeast-
+  CidrBlockVpc:
+    Type:  String
+    Default:  10.0.0.0/16
+  Subnet01CidrBlock:
+    Type:  String
+    Default:  10.0.0.0/24
   TagValuePrefix:
     Type:  String
     Default:  my
@@ -23,32 +29,35 @@ Resources:
   Vpc:
     Type:  AWS::EC2::VPC
     Properties:  
-      CidrBlock:  10.0.0.0/16
+      CidrBlock:  !Ref  CidrBlockVpc
       EnableDnsHostnames:  true
       EnableDnsSupport:  true
       Tags:
         - Key:  !Ref  Tagkey
           Value:  !Sub  ${TagValuePrefix}-vpc
 
-# Subnet
+# Subnets
 ## Subnet 01
   Subnet01:
     Type:  AWS::EC2::VPC
     Properties: 
       VpcId:  !Ref  Vpc
       AvailabilityZone:  !Select  [  0,  !Ref  AvailabilityZoneOption  ]
-      CidrBlock:  10.0.0.0/24
+      CidrBlock:  !Ref  Subnet01CidrBlock
       Tags:
         - Key:  !Ref  Tagkey
           Value:  !Sub  ${TagValuePrefix}-Subnet01
 
 
-# RouteTable
+# RouteTables
 ## RouteTable 01
-# RouteTable Association
+# RouteTable Associations
 # RouteTable Association 01
-# NACL
+# NACLs
 ## NACL 01
+# NACL Associations
+## NACL Associations 01
+
 
 
 #---------------------------------#
