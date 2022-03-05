@@ -84,9 +84,17 @@ Resources:
     Properties:
       SubnetId:  !Ref  Subnet01
       RouteTableId:  !Ref  RouteTable01
-      
+
 # NACLs
 ## NACL 01
+  Nacl01:
+    Type:  AWS::EC2::NaclAcl
+    Properties:
+    VpcId:  !Ref  Vpc
+    Tags:
+      - Key:  !Ref  Tagkey
+        Value:  !Sub  ${TagValuePrefix}-Nacl01
+        
 # NACL Associations
 ## NACL Associations 01
 
