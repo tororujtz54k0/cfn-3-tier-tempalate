@@ -4,6 +4,9 @@ Description: 3 tier infra template.
 # Parameters Section
 #---------------------------------#
 Parameters:
+  AvailabilityZoneOption:
+    Type:  CommaDelimitedList
+    Default:  ap-northeast-1c, ap-northeast-1a, ap-northeast-1d
   TagValuePrefix:
     Type:  String
     Default:  my
@@ -29,6 +32,17 @@ Resources:
 
 # Subnet
 ## Subnet 01
+  Subnet01:
+    Type:  AWS::EC2::VPC
+    Properties: 
+      VpcId:  !Ref  Vpc
+      AvailabilityZone:  !Select  [  0,  !Ref  AvailabilityZoneOption  ]
+      CidrBlock:  10.0.0.0/24
+      Tags:
+        - Key:  !Ref  Tagkey
+          Value:  !Sub  ${TagValuePrefix}-Subnet01
+
+
 # RouteTable
 ## RouteTable 01
 # RouteTable Association
