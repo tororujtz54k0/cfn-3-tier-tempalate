@@ -1,5 +1,8 @@
 AWSTemplateFormatVersion:  2010-09-09
 Description: 3 tier infra template.
+#---------------------------------#
+# Parameters Section
+#---------------------------------#
 Parameters:
   TagValuePrefix:
     Type:  String
@@ -13,6 +16,7 @@ Parameters:
 # Resources Section
 #---------------------------------#
 Resources:
+# VPC
   Vpc:
     Type:  AWS::EC2::VPC
     Properties:  
@@ -23,4 +27,16 @@ Resources:
         - Key:  !Ref  Tagkey
           Value:  !Sub  ${TagValuePrefix}-vpc
 
+# Subnet
+## Subnet 01
+# RouteTable
+## RouteTable 01
+# RouteTable Association
+# RouteTable Association 01
+# NACL
+## NACL 01
 
+
+#---------------------------------#
+# Outputs Section
+#---------------------------------#
