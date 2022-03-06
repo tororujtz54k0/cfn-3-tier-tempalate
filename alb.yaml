@@ -1,0 +1,62 @@
+AWSTemplateFormatVersion:  2010-09-09
+Description:  Template for Application Load Balancer.
+Parameters:
+  HealthCheckIntervalSeconds:
+    Type:  String
+    Default:  30
+  HealthCheckTimeoutSeconds:
+    Type:  String
+    Default:  120
+  TargetGroupName:
+    Type:  String
+    Default:  my-target-group
+  CheckedPort:
+    Type:  String
+    Default:  80
+  TagKey:
+    Type:  String
+    Default:  Name
+  TagValue:
+    Type:  String
+    Default:  my
+  OutputPrefix:
+    Type:  String
+    Default:  my
+Resources:
+# ALB target
+  AlbTarget:
+    Type:  AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      HealthCheckEnabled:  true
+      HealthCheckIntervalSeconds:  !Ref  HealthCheckIntervalSeconds
+      # HealthCheckPath: 
+      # HealthCheckProtocol:
+      # HealthCheckTimeoutSeconds: !Ref  HealthCheckTimeoutSeconds
+      # HealthyThresholdCount:
+      Name:  !Ref  TargetGroupName
+      Port:  !Ref  CheckedPort
+      VpcId:  !ImportValue  my-Vpc
+      Tags:
+        - Key:  !Ref  TagKey
+          Value:  !Sub  ${TagValue} -alb-targetgrp-01          
+  Alb01:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Subnets:
+        - !Ref  
+      Scheme:  internet-facing
+      SecurityGroups:
+        - !ImportValue  my-AlbSg01
+      Tags:
+        - Key:  !Ref  TagKey
+          Value:  !Sub  ${TagValue} -alb-01
+          
+Outputs:
+  AlbTargetOutput:
+    Value:  !Ref  AlbTarget
+    Export:
+      Name:  !Sub  ${OutputPrefix}-alb-targetgrp-01
+  AlbOutput:
+    Value:  !Ref  Alb01
+    Export:
+      Name:  !Sub  ${OutputPrefix}-alb-01    
