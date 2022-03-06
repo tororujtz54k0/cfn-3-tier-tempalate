@@ -458,3 +458,31 @@ Outputs:
     Value:  !Ref Subnet01
     Export:
       Name:  !Sub  ${OutputPrefix}-Subnet01
+  Subnet02Output:
+    Value:  !Ref Subnet02
+    Export:
+      Name:  !Sub  ${OutputPrefix}-Subnet02      
+  Subnet03Output:
+    Value:  !Ref Subnet03
+    Export:
+      Name:  !Sub  ${OutputPrefix}-Subnet03
+  Subnet04Output:
+    Value:  !Ref Subnet04
+    Export:
+      Name:  !Sub  ${OutputPrefix}-Subnet04
+  Subnet05Output:
+    Value:  !Ref Subnet05
+    Export:
+      Name:  !Sub  ${OutputPrefix}-Subnet05
+  Subnet06Output:
+    Value:  !Ref Subnet06
+    Export:
+      Name:  !Sub  ${OutputPrefix}-Subnet06      
+  Subnet07Output:
+    Value:  !Ref Subnet07
+    Export:
+      Name:  !Sub  ${OutputPrefix}-Subnet07
+  Subnet08Output:
+    Value:  !Ref Subnet08
+    Export:
+      Name:  !Sub  ${OutputPrefix}-Subnet08            
