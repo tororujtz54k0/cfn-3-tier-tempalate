@@ -17,4 +17,42 @@ Parameters:
     Type:  String
     Default:  my
 Resources:
+#---------------------------------#
+# Aurora Instance Section
+#---------------------------------#
+  AuroraCluster:
+    Type:  AWS::RDS::DBCluster
+    Properties:
+      AvailabilityZones:
+        - !Select [  0,  !Ref  AvailabilityZoneOption ]
+        - !Select [  1,  !Ref  AvailabilityZoneOption ]  
+      CopyTagsToSnapshot: true
+      DeletionProtection:  false
+      Engine: aurora-mysql
+      EngineVersion:  5.7.12
+      DBClusterIdentifier:
+      KmsKeyId:  !ImportValue 
+      MasterUsername:  admin
+      # MasterUserPassword:   
+      # PreferredBackupWindow: 
+      # PreferredMaintenanceWindow:
+      DBSubnetGroupName:  !Ref  DBSubnetGroup
+      DBClusterParameterGroupName:  !Ref AuroraMysqlParameterGrp
+      StorageEncrypted:  true
+
+      VpcSecurityGroupIds:
+        - ! !ImportValue my-AurorabSg
+      Tags:
+        - Key:  !Ref  TagKey
+          Value:  !Sub  ${TagValue} -aurora-01        
+#---------------------------------#
+# DB Subnet Group Section
+#---------------------------------#
+  DBSubnetGroup:
+    Type:  AWS::RDS::DBSubnetGroup
+    Properties:
+      DBSubnetGroupDescription: Aurora MySQL SubnetGroup
+      SubnetIds:
+        - !ImportValue my-Subnet07
+        - !ImportValue my-Subnet08       
 # Outputs:
