@@ -277,6 +277,24 @@ Resources:
       Protocol:  -1
       RuleAction:  allow
       CidrBlock:  0.0.0.0/0
+  NaclOutbound02:
+    Type:  AWS::EC2::NetworkAclEntry
+    Properties:
+      NetworkAclId:  !Ref  Nacl02
+      Egress:  true
+      RuleNumber:  32760
+      Protocol:  -1
+      RuleAction:  allow
+      CidrBlock:  0.0.0.0/0
+# NACL Entry 03
+  NaclInbound02:
+    Type:  AWS::EC2::NetworkAclEntry
+    Properties:
+      NetworkAclId:  !Ref  Nacl03
+      RuleNumber:  32760
+      Protocol:  -1
+      RuleAction:  allow
+      CidrBlock:  0.0.0.0/0
   NaclOutbound03:
     Type:  AWS::EC2::NetworkAclEntry
     Properties:
@@ -285,12 +303,12 @@ Resources:
       RuleNumber:  32760
       Protocol:  -1
       RuleAction:  allow
-      CidrBlock:  0.0.0.0/0      
+      CidrBlock:  0.0.0.0/0            
 # NACL Entry 04
   NaclInbound04:
     Type:  AWS::EC2::NetworkAclEntry
     Properties:
-      NetworkAclId:  !Ref  Nacl03
+      NetworkAclId:  !Ref  Nacl04
       RuleNumber:  32760
       Protocol:  -1
       RuleAction:  allow
@@ -376,7 +394,7 @@ Resources:
       Protocol:  -1
       RuleAction:  allow
       CidrBlock:  0.0.0.0/0
-      
+
 # NACL Associations
 ## NACL Associations 01
   NaclAssociation01:
@@ -384,7 +402,48 @@ Resources:
     Properties:
       SubnetId:  !Ref  Subnet01
       NetworkAclId:  !Ref  Nacl01
-
+## NACL Associations 02
+  NaclAssociation02:
+    Type:  AWS::EC2::SubnetNetworkAclAssociation
+    Properties:
+      SubnetId:  !Ref  Subnet02
+      NetworkAclId:  !Ref  Nacl02
+## NACL Associations 03
+  NaclAssociation03:
+    Type:  AWS::EC2::SubnetNetworkAclAssociation
+    Properties:
+      SubnetId:  !Ref  Subnet03
+      NetworkAclId:  !Ref  Nacl03
+## NACL Associations 04
+  NaclAssociation04:
+    Type:  AWS::EC2::SubnetNetworkAclAssociation
+    Properties:
+      SubnetId:  !Ref  Subnet04
+      NetworkAclId:  !Ref  Nacl04
+## NACL Associations 05
+  NaclAssociation05:
+    Type:  AWS::EC2::SubnetNetworkAclAssociation
+    Properties:
+      SubnetId:  !Ref  Subnet05
+      NetworkAclId:  !Ref  Nacl05
+## NACL Associations 06
+  NaclAssociation06:
+    Type:  AWS::EC2::SubnetNetworkAclAssociation
+    Properties:
+      SubnetId:  !Ref  Subnet06
+      NetworkAclId:  !Ref  Nacl06
+## NACL Associations 07
+  NaclAssociation07:
+    Type:  AWS::EC2::SubnetNetworkAclAssociation
+    Properties:
+      SubnetId:  !Ref  Subnet07
+      NetworkAclId:  !Ref  Nacl07
+## NACL Associations 08
+  NaclAssociation02:
+    Type:  AWS::EC2::SubnetNetworkAclAssociation
+    Properties:
+      SubnetId:  !Ref  Subnet08
+      NetworkAclId:  !Ref  Nacl08
 
 
 #---------------------------------#
