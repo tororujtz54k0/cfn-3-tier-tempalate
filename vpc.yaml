@@ -6,7 +6,7 @@ Description: 3 tier infra template.
 Parameters:
   AvailabilityZoneOption:
     Type:  CommaDelimitedList
-    Default:  ap-northeast-1c, ap-northeast-1a, ap-northeast-
+    Default:  ap-northeast-1c, ap-northeast-1a, ap-northeast-1d
   CidrBlockVpc:
     Type:  String
     Default:  10.0.0.0/16
@@ -16,6 +16,21 @@ Parameters:
   Subnet01CidrBlock:
     Type:  String
     Default:  10.0.0.0/24
+  Subnet02CidrBlock:
+    Type:  String
+    Default:  10.0.1.0/24
+  Subnet03CidrBlock:
+    Type:  String
+    Default:  10.0.2.0/24
+  Subnet04CidrBlock:
+    Type:  String
+    Default:  10.0.3.0/24  
+  Subnet05CidrBlock:
+    Type:  String
+    Default:  10.0.4.0/24
+  Subnet06CidrBlock:
+    Type:  String
+    Default:  10.0.5.0/24        
   TagValuePrefix:
     Type:  String
     Default:  my
@@ -49,7 +64,7 @@ Resources:
         - Key:  !Ref  Tagkey
           Value:  !Ref  ${TagValuePrefix}-igw01
 # Subnets
-## Subnet 01
+## Subnet 01 -- alb
   Subnet01:
     Type:  AWS::EC2::VPC
     Properties: 
@@ -60,6 +75,16 @@ Resources:
         - Key:  !Ref  Tagkey
           Value:  !Sub  ${TagValuePrefix}-Subnet01
 
+## Subnet 02 -- alb
+  Subnet01:
+    Type:  AWS::EC2::VPC
+    Properties: 
+      VpcId:  !Ref  Vpc
+      AvailabilityZone:  !Select  [  1,  !Ref  AvailabilityZoneOption  ]
+      CidrBlock:  !Ref  Subnet02CidrBlock
+      Tags:
+        - Key:  !Ref  Tagkey
+          Value:  !Sub  ${TagValuePrefix}-Subnet02
 
 # RouteTables
 ## RouteTable 01
