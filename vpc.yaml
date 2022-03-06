@@ -248,8 +248,9 @@ Resources:
     Tags:
       - Key:  !Ref  Tagkey
         Value:  !Sub  ${TagValuePrefix}-Nacl08
-        
+
 # NACL Entry
+# NACL Entry 01
   NaclInbound01:
     Type:  AWS::EC2::NetworkAclEntry
     Properties:
@@ -267,7 +268,115 @@ Resources:
       Protocol:  -1
       RuleAction:  allow
       CidrBlock:  0.0.0.0/0
-
+# NACL Entry 02
+  NaclInbound02:
+    Type:  AWS::EC2::NetworkAclEntry
+    Properties:
+      NetworkAclId:  !Ref  Nacl02
+      RuleNumber:  32760
+      Protocol:  -1
+      RuleAction:  allow
+      CidrBlock:  0.0.0.0/0
+  NaclOutbound03:
+    Type:  AWS::EC2::NetworkAclEntry
+    Properties:
+      NetworkAclId:  !Ref  Nacl03
+      Egress:  true
+      RuleNumber:  32760
+      Protocol:  -1
+      RuleAction:  allow
+      CidrBlock:  0.0.0.0/0      
+# NACL Entry 04
+  NaclInbound04:
+    Type:  AWS::EC2::NetworkAclEntry
+    Properties:
+      NetworkAclId:  !Ref  Nacl03
+      RuleNumber:  32760
+      Protocol:  -1
+      RuleAction:  allow
+      CidrBlock:  0.0.0.0/0
+  NaclOutbound04:
+    Type:  AWS::EC2::NetworkAclEntry
+    Properties:
+      NetworkAclId:  !Ref  Nacl04
+      Egress:  true
+      RuleNumber:  32760
+      Protocol:  -1
+      RuleAction:  allow
+      CidrBlock:  0.0.0.0/0
+# NACL Entry 05
+  NaclInbound05:
+    Type:  AWS::EC2::NetworkAclEntry
+    Properties:
+      NetworkAclId:  !Ref  Nacl05
+      RuleNumber:  32760
+      Protocol:  -1
+      RuleAction:  allow
+      CidrBlock:  0.0.0.0/0
+  NaclOutbound05:
+    Type:  AWS::EC2::NetworkAclEntry
+    Properties:
+      NetworkAclId:  !Ref  Nacl05
+      Egress:  true
+      RuleNumber:  32760
+      Protocol:  -1
+      RuleAction:  allow
+      CidrBlock:  0.0.0.0/0
+# NACL Entry 06
+  NaclInbound06:
+    Type:  AWS::EC2::NetworkAclEntry
+    Properties:
+      NetworkAclId:  !Ref  Nacl06
+      RuleNumber:  32760
+      Protocol:  -1
+      RuleAction:  allow
+      CidrBlock:  0.0.0.0/0
+  NaclOutbound06:
+    Type:  AWS::EC2::NetworkAclEntry
+    Properties:
+      NetworkAclId:  !Ref  Nacl06
+      Egress:  true
+      RuleNumber:  32760
+      Protocol:  -1
+      RuleAction:  allow
+      CidrBlock:  0.0.0.0/0
+# NACL Entry 07
+  NaclInbound07:
+    Type:  AWS::EC2::NetworkAclEntry
+    Properties:
+      NetworkAclId:  !Ref  Nacl07
+      RuleNumber:  32760
+      Protocol:  -1
+      RuleAction:  allow
+      CidrBlock:  0.0.0.0/0
+  NaclOutbound07:
+    Type:  AWS::EC2::NetworkAclEntry
+    Properties:
+      NetworkAclId:  !Ref  Nacl07
+      Egress:  true
+      RuleNumber:  32760
+      Protocol:  -1
+      RuleAction:  allow
+      CidrBlock:  0.0.0.0/0      
+# NACL Entry 08
+  NaclInbound08:
+    Type:  AWS::EC2::NetworkAclEntry
+    Properties:
+      NetworkAclId:  !Ref  Nacl08
+      RuleNumber:  32760
+      Protocol:  -1
+      RuleAction:  allow
+      CidrBlock:  0.0.0.0/0
+  NaclOutbound08:
+    Type:  AWS::EC2::NetworkAclEntry
+    Properties:
+      NetworkAclId:  !Ref  Nacl08
+      Egress:  true
+      RuleNumber:  32760
+      Protocol:  -1
+      RuleAction:  allow
+      CidrBlock:  0.0.0.0/0
+      
 # NACL Associations
 ## NACL Associations 01
   NaclAssociation01:
