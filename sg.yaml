@@ -76,4 +76,45 @@ Resources:
       Tags:
         - Key:  !Ref  TagKey
           Value:  !Sub  ${TagValue} -ec2-web-sg-02         
+
+# SG04 App Server#1
+  Ec2WebSg02:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription:  "SG for Ec2 App 01"
+      SecurityGroupIngress:
+        - IpProtocol:  tcp
+          FromPort:  !Ref  HttpPort
+          ToPort:  !Ref  HttpPort
+          CidrIp:  !Ref  AllCidrIp
+      SecurityGroupEgress:
+        - IpProtocol:  tcp
+          FromPort:  !Ref  HttpPort
+          ToPort:  !Ref  HttpPort
+          SourceSecurityGroupId: !Ref  Ec2WebSg01
+      VpcId:  !ImportValue  Vpc
+      Tags:
+        - Key:  !Ref  TagKey
+          Value:  !Sub  ${TagValue} -ec2-app-sg-01
+
+# SG05 App Server#2
+  Ec2WebSg02:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription:  "SG for Ec2 App 02"
+      SecurityGroupIngress:
+        - IpProtocol:  tcp
+          FromPort:  !Ref  HttpPort
+          ToPort:  !Ref  HttpPort
+          CidrIp:  !Ref  AllCidrIp
+      SecurityGroupEgress:
+        - IpProtocol:  tcp
+          FromPort:  !Ref  HttpPort
+          ToPort:  !Ref  HttpPort
+          SourceSecurityGroupId: !Ref  Ec2WebSg02
+      VpcId:  !ImportValue  Vpc
+      Tags:
+        - Key:  !Ref  TagKey
+          Value:  !Sub  ${TagValue} -ec2-app-sg-02
+          
 Outputs:
