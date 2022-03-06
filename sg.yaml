@@ -1,0 +1,177 @@
+AWSTemplateFormatVersion:  2010-09-09
+Description:  Template for SecurityGroup.
+Parameters:
+  AllCidrIp:
+    Type:  String
+    Default:  0.0.0.0/0
+  HttpsPort:
+    Type:  String
+    Default:  443
+  HttpPort:
+    Type:  String
+    Default:  80
+    HttpPort:
+    Type:  String
+    Default:  80
+  MySqlPort:
+    Type:  String
+    Default:  3306
+  TagKey:
+    Type:  String
+    Default:  Name
+  TagValue:
+    Type:  String
+    Default:  my
+  OutputPrefix:
+    Type:  String
+    Default:  my
+Resources:
+# SG01 --ALB
+  AlbSg01:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription:  "SG for Alb01"
+      SecurityGroupIngress:
+        - IpProtocol:  tcp
+          FromPort:  !Ref  HttpsPort
+          ToPort:  !Ref  HttpsPort
+          CidrIp:  !Ref  AllCidrIp
+      SecurityGroupEgress:
+        - IpProtocol:  tcp
+          FromPort:  !Ref  HttpsPort
+          ToPort:  !Ref  HttpsPort
+          CidrIp:  !Ref  AllCidrIp
+      VpcId:  !ImportValue  
+      Tags:
+        - Key:  !Ref  TagKey
+          Value:  !Sub  ${TagValue} -alb-sg01
+# SG02 Web Server#1
+  Ec2WebSg01:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription:  "SG for Ec2 Web 01"
+      SecurityGroupIngress:
+        - IpProtocol:  tcp
+          FromPort:  !Ref  HttpPort
+          ToPort:  !Ref  HttpPort
+          CidrIp:  !Ref  AllCidrIp
+          SourceSecurityGroupId: 
+            - !Ref  AlbSg01
+      SecurityGroupEgress:
+        - IpProtocol:  tcp
+          FromPort:  !Ref  HttpPort
+          ToPort:  !Ref  HttpPort
+      VpcId:  !ImportValue  Vpc
+      Tags:
+        - Key:  !Ref  TagKey
+          Value:  !Sub  ${TagValue} -ec2-web-sg-01
+
+# SG03 Web Server#2
+  Ec2WebSg02:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription:  "SG for Ec2 Web 02"
+      SecurityGroupIngress:
+        - IpProtocol:  tcp
+          FromPort:  !Ref  HttpPort
+          ToPort:  !Ref  HttpPort
+          CidrIp:  !Ref  AllCidrIp
+          SourceSecurityGroupId:
+            - !Ref  AlbSg01
+      SecurityGroupEgress:
+        - IpProtocol:  tcp
+          FromPort:  !Ref  HttpPort
+          ToPort:  !Ref  HttpPort
+      VpcId:  !ImportValue  Vpc
+      Tags:
+        - Key:  !Ref  TagKey
+          Value:  !Sub  ${TagValue} -ec2-web-sg-02         
+
+# SG04 App Server#1
+  Ec2AppSg01:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription:  "SG for Ec2 App 01"
+      SecurityGroupIngress:
+        - IpProtocol:  tcp
+          FromPort:  !Ref  HttpPort
+          ToPort:  !Ref  HttpPort
+          CidrIp:  !Ref  AllCidrIp
+          SourceSecurityGroupId:
+            - !Ref  Ec2WebSg01
+      SecurityGroupEgress:
+        - IpProtocol:  tcp
+          FromPort:  !Ref  HttpPort
+          ToPort:  !Ref  HttpPort
+      VpcId:  !ImportValue  Vpc
+      Tags:
+        - Key:  !Ref  TagKey
+          Value:  !Sub  ${TagValue} -ec2-app-sg-01
+
+# SG05 App Server#2
+  Ec2AppSg02:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription:  "SG for Ec2 App 02"
+      SecurityGroupIngress:
+        - IpProtocol:  tcp
+          FromPort:  !Ref  HttpPort
+          ToPort:  !Ref  HttpPort
+          CidrIp:  !Ref  AllCidrIp
+          SourceSecurityGroupId:
+            - !Ref  Ec2WebSg02
+      SecurityGroupEgress:
+        - IpProtocol:  tcp
+          FromPort:  !Ref  HttpPort
+          ToPort:  !Ref  HttpPort
+      VpcId:  !ImportValue  Vpc
+      Tags:
+        - Key:  !Ref  TagKey
+          Value:  !Sub  ${TagValue} -ec2-app-sg-02
+
+# SG06 Aurora
+  AurorabSg:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription:  "SG for Aurora Cluster"
+      SecurityGroupIngress:
+        - IpProtocol:  tcp
+          FromPort:  !Ref  MySqlPort
+          ToPort:  !Ref  MySqlPort
+          CidrIp:  !Ref  AllCidrIp
+          SourceSecurityGroupId: 
+            - !Ref  Ec2AppSg01
+            - !Ref  Ec2AppSg02
+      # SecurityGroupEgress:
+      #   - IpProtocol:  tcp
+      #     FromPort:  !Ref  HttpPort
+      #     ToPort:  !Ref  HttpPort
+      VpcId:  !ImportValue  Vpc
+      Tags:
+        - Key:  !Ref  TagKey
+          Value:  !Sub  ${TagValue} -ec2-app-sg-02
+Outputs:
+  AlbSg01:
+    Value:  !Ref  AlbSg01
+    Export:
+      Name:  !Sub  ${OutputPrefix}-AlbSg01
+  Ec2WebSg01:
+    Value:  !Ref  Ec2WebSg01
+    Export:
+      Name:  !Sub  ${OutputPrefix}-Ec2WebSg01
+  Ec2WebSg02:
+    Value:  !Ref  Ec2WebSg02
+    Export:
+      Name:  !Sub  ${OutputPrefix}-Ec2WebSg02
+  Ec2AppSg01:
+    Value:  !Ref  Ec2AppSg01
+    Export:
+      Name:  !Sub  ${OutputPrefix}-Ec2AppSg01      
+  Ec2AppSg02:
+    Value:  !Ref  Ec2AppSg02
+    Export:
+      Name:  !Sub  ${OutputPrefix}-Ec2AppSg02
+  AurorabSg:
+    Value:  !Ref  AurorabSg
+    Export:
+      Name:  !Sub  ${OutputPrefix}-AurorabSg
