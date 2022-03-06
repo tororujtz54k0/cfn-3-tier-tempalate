@@ -1,0 +1,20 @@
+AWSTemplateFormatVersion:  2010-09-09
+Description:  Template for Ec2 Incstances.
+Parameters:
+  AvailabilityZoneOption:
+    Type: CommaDelimitedList
+    Default:  ap-northeast-1c, ap-northeast-1a, ap-northeast-1d
+  InstanceTypeOption:
+    Type: CommaDelimitedList
+    Default:  
+  TagKey:
+    Type:  String
+    Default:  Name
+  TagValue:
+    Type:  String
+    Default:  my
+  OutputPrefix:
+    Type:  String
+    Default:  my
+Resources:
+# Outputs:
