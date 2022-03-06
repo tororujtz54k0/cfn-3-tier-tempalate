@@ -192,7 +192,63 @@ Resources:
     Tags:
       - Key:  !Ref  Tagkey
         Value:  !Sub  ${TagValuePrefix}-Nacl01
-
+## NACL 02
+  Nacl02:
+    Type:  AWS::EC2::NaclAcl
+    Properties:
+    VpcId:  !Ref  Vpc
+    Tags:
+      - Key:  !Ref  Tagkey
+        Value:  !Sub  ${TagValuePrefix}-Nacl02
+## NACL 03
+  Nacl03:
+    Type:  AWS::EC2::NaclAcl
+    Properties:
+    VpcId:  !Ref  Vpc
+    Tags:
+      - Key:  !Ref  Tagkey
+        Value:  !Sub  ${TagValuePrefix}-Nacl03
+## NACL 04
+  Nacl04:
+    Type:  AWS::EC2::NaclAcl
+    Properties:
+    VpcId:  !Ref  Vpc
+    Tags:
+      - Key:  !Ref  Tagkey
+        Value:  !Sub  ${TagValuePrefix}-Nacl04
+## NACL 05
+  Nacl05:
+    Type:  AWS::EC2::NaclAcl
+    Properties:
+    VpcId:  !Ref  Vpc
+    Tags:
+      - Key:  !Ref  Tagkey
+        Value:  !Sub  ${TagValuePrefix}-Nacl05
+## NACL 06
+  Nacl06:
+    Type:  AWS::EC2::NaclAcl
+    Properties:
+    VpcId:  !Ref  Vpc
+    Tags:
+      - Key:  !Ref  Tagkey
+        Value:  !Sub  ${TagValuePrefix}-Nacl06
+## NACL 07
+  Nacl07:
+    Type:  AWS::EC2::NaclAcl
+    Properties:
+    VpcId:  !Ref  Vpc
+    Tags:
+      - Key:  !Ref  Tagkey
+        Value:  !Sub  ${TagValuePrefix}-Nacl07
+## NACL 08
+  Nacl08:
+    Type:  AWS::EC2::NaclAcl
+    Properties:
+    VpcId:  !Ref  Vpc
+    Tags:
+      - Key:  !Ref  Tagkey
+        Value:  !Sub  ${TagValuePrefix}-Nacl08
+        
 # NACL Entry
   NaclInbound01:
     Type:  AWS::EC2::NetworkAclEntry
