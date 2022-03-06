@@ -4,6 +4,9 @@ Parameters:
   BucketName01:
     Type: String
     Default:  my-s3-bucket-01
+  ExportPrefix:
+    Type:  String
+    Default:  my
 Resources:
 #S3 Bucket01
   S3buacket01:
