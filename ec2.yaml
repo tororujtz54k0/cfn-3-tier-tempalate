@@ -1,0 +1,139 @@
+AWSTemplateFormatVersion:  2010-09-09
+Description:  Template for Ec2 Incstances.
+Parameters:
+  AvailabilityZoneOption:
+    Type: CommaDelimitedList
+    Default:  ap-northeast-1c, ap-northeast-1a, ap-northeast-1d
+  ImageIdOption:
+    Type:  CommaDelimitedList
+    Default:  AmazonLInux2, CentOs7, RHEL  # later describe AMI-id
+  InstanceTypeOption:
+    Type: CommaDelimitedList
+    Default:  t3.micro, m5.2xlarge, m5.xlarge, m5.large, r5.2xlarge, r5.xlarge, r5.large
+  VolumeSizeOption:
+    Type:  CommaDelimitedList
+    Default:  50, 100, 120, 150
+  TagKey:
+    Type:  String
+    Default:  Name
+  TagValue:
+    Type:  String
+    Default:  my
+  OutputPrefix:
+    Type:  String
+    Default:  my
+Resources:
+# EC201 -- Web Server#1
+  EC201:
+    Type:  AWS::EC2::Instance
+    Properties:
+      AvailabilityZone:  !Select  [  0, !Ref  AvailabilityZoneOption  ]
+      BlockDeviceMappings:
+        - DeviceName:  /dev/sda1
+          Ebs:
+            VolumeSize:  !Select  [  0,  !Ref  VolumeSizeOption  ]
+            VolumeType:  io1
+            DeleteOnTermination: true
+        - DeviceName:  /dev/sdd
+          Ebs:
+            VolumeSize:  !Select  [  0,  !Ref  VolumeSizeOption  ]
+            VolumeType:  io1
+            DeleteOnTermination: true            
+      DisableApiTermination:  false
+      # IamInstanceProfile:  !Ref
+      ImageId:  !Select  [  0,  !Ref  ImageIdOption  ]
+      InstanceType:  !Select  [  0,  !Ref  InstanceTypeOption  ]
+      # KeyName:  !Ref  
+      PropagateTagsToVolumeOnCreation:  true
+      SecurityGroupIds:
+        - !ImportValue  my-Ec2WebSg01
+      SubnetId:  !ImportValue  my-Subnet03
+      Tags:
+        - Key:  !Ref  TagKey
+          Value:  !Sub  ${TagValue}-ec2-web-c-01
+# EC202 -- Web Server#2
+  EC202:
+    Type:  AWS::EC2::Instance
+    Properties:
+      AvailabilityZone:  !Select  [  1, !Ref  AvailabilityZoneOption  ]
+      BlockDeviceMappings:
+        - DeviceName:  /dev/sda1
+          Ebs:
+            VolumeSize:  !Select  [  0,  !Ref  VolumeSizeOption  ]
+            VolumeType:  io1
+            DeleteOnTermination: true
+        - DeviceName:  /dev/sdd
+          Ebs:
+            VolumeSize:  !Select  [  0,  !Ref  VolumeSizeOption  ]
+            VolumeType:  io1
+            DeleteOnTermination: true            
+      DisableApiTermination:  false
+      # IamInstanceProfile:  !Ref
+      ImageId:  !Select  [  0,  !Ref  ImageIdOption  ]
+      InstanceType:  !Select  [  0,  !Ref  InstanceTypeOption  ]
+      # KeyName:  !Ref  
+      PropagateTagsToVolumeOnCreation:  true
+      SecurityGroupIds:
+        - !ImportValue  my-Ec2WebSg02
+      SubnetId:  !ImportValue  my-Subnet04
+      Tags:
+        - Key:  !Ref  TagKey
+          Value:  !Sub  ${TagValue}-ec2-web-a-02
+# EC203 -- App Server#1
+  EC203:
+    Type:  AWS::EC2::Instance
+    Properties:
+      AvailabilityZone:  !Select  [  0, !Ref  AvailabilityZoneOption  ]
+      BlockDeviceMappings:
+        - DeviceName:  /dev/sda1
+          Ebs:
+            VolumeSize:  !Select  [  0,  !Ref  VolumeSizeOption  ]
+            VolumeType:  io1
+            DeleteOnTermination: true
+        - DeviceName:  /dev/sdd
+          Ebs:
+            VolumeSize:  !Select  [  0,  !Ref  VolumeSizeOption  ]
+            VolumeType:  io1
+            DeleteOnTermination: true            
+      DisableApiTermination:  false
+      # IamInstanceProfile:  !Ref
+      ImageId:  !Select  [  0,  !Ref  ImageIdOption  ]
+      InstanceType:  !Select  [  0,  !Ref  InstanceTypeOption  ]
+      # KeyName:  !Ref  
+      PropagateTagsToVolumeOnCreation:  true
+      SecurityGroupIds:
+        - !ImportValue  my-Ec2AppSg01
+      SubnetId:  !ImportValue  my-Subnet05
+      Tags:
+        - Key:  !Ref  TagKey
+          Value:  !Sub  ${TagValue}-ec2-app-c-01
+# EC204 -- App Server#2
+  EC204:
+    Type:  AWS::EC2::Instance
+    Properties:
+      AvailabilityZone:  !Select  [  1, !Ref  AvailabilityZoneOption  ]
+      BlockDeviceMappings:
+        - DeviceName:  /dev/sda1
+          Ebs:
+            VolumeSize:  !Select  [  0,  !Ref  VolumeSizeOption  ]
+            VolumeType:  io1
+            DeleteOnTermination: true
+        - DeviceName:  /dev/sdd
+          Ebs:
+            VolumeSize:  !Select  [  0,  !Ref  VolumeSizeOption  ]
+            VolumeType:  io1
+            DeleteOnTermination: true            
+      DisableApiTermination:  false
+      # IamInstanceProfile:  !Ref
+      ImageId:  !Select  [  0,  !Ref  ImageIdOption  ]
+      InstanceType:  !Select  [  0,  !Ref  InstanceTypeOption  ]
+      # KeyName:  !Ref  
+      PropagateTagsToVolumeOnCreation:  true
+      SecurityGroupIds:
+        - !ImportValue  my-Ec2AppSg02
+      SubnetId:  !ImportValue  my-Subnet06
+      Tags:
+        - Key:  !Ref  TagKey
+          Value:  !Sub  ${TagValue}-ec2-app-a-02
+
+# Outputs:
