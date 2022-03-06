@@ -1,0 +1,488 @@
+AWSTemplateFormatVersion:  2010-09-09
+Description: 3 tier infra template.
+#---------------------------------#
+# Parameters Section
+#---------------------------------#
+Parameters:
+  AvailabilityZoneOption:
+    Type:  CommaDelimitedList
+    Default:  ap-northeast-1c, ap-northeast-1a, ap-northeast-1d
+  CidrBlockVpc:
+    Type:  String
+    Default:  10.0.0.0/16
+  PublicSubnetDestinationCidrBlock:
+    Type:  String
+    Default:  0.0.0.0/0
+  Subnet01CidrBlock:
+    Type:  String
+    Default:  10.0.0.0/24
+  Subnet02CidrBlock:
+    Type:  String
+    Default:  10.0.1.0/24
+  Subnet03CidrBlock:
+    Type:  String
+    Default:  10.0.2.0/24
+  Subnet04CidrBlock:
+    Type:  String
+    Default:  10.0.3.0/24  
+  Subnet05CidrBlock:
+    Type:  String
+    Default:  10.0.4.0/24
+  Subnet06CidrBlock:
+    Type:  String
+    Default:  10.0.5.0/24
+  Subnet07CidrBlock:
+    Type:  String
+    Default:  10.0.6.0/24
+  Subnet08CidrBlock:
+    Type:  String
+    Default:  10.0.7.0/24
+  TagValuePrefix:
+    Type:  String
+    Default:  my
+  Tagkey:
+    Type:  String
+    Default:  Name
+  OutputPrefix:
+    Type:  String
+    Default:  my
+  
+
+#---------------------------------#
+# Resources Section
+#---------------------------------#
+Resources:
+# VPC
+  Vpc:
+    Type:  AWS::EC2::VPC
+    Properties:  
+      CidrBlock:  !Ref  CidrBlockVpc
+      EnableDnsHostnames:  true
+      EnableDnsSupport:  true
+      Tags:
+        - Key:  !Ref  Tagkey
+          Value:  !Sub  ${TagValuePrefix}-vpc
+# Internet Gateway
+  Igw01:
+    Type:  AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key:  !Ref  Tagkey
+          Value:  !Ref  ${TagValuePrefix}-igw01
+# Subnets
+## Subnet 01 -- alb
+  Subnet01:
+    Type:  AWS::EC2::VPC
+    Properties: 
+      VpcId:  !Ref  Vpc
+      AvailabilityZone:  !Select  [  0,  !Ref  AvailabilityZoneOption  ]
+      CidrBlock:  !Ref  Subnet01CidrBlock
+      Tags:
+        - Key:  !Ref  Tagkey
+          Value:  !Sub  ${TagValuePrefix}-Subnet01
+
+## Subnet 02 -- alb
+  Subnet01:
+    Type:  AWS::EC2::VPC
+    Properties: 
+      VpcId:  !Ref  Vpc
+      AvailabilityZone:  !Select  [  1,  !Ref  AvailabilityZoneOption  ]
+      CidrBlock:  !Ref  Subnet02CidrBlock
+      Tags:
+        - Key:  !Ref  Tagkey
+          Value:  !Sub  ${TagValuePrefix}-Subnet02
+
+## Subnet 03 -- web server 01
+  Subnet03:
+    Type:  AWS::EC2::VPC
+    Properties: 
+      VpcId:  !Ref  Vpc
+      AvailabilityZone:  !Select  [  0,  !Ref  AvailabilityZoneOption  ]
+      CidrBlock:  !Ref  Subnet03CidrBlock
+      Tags:
+        - Key:  !Ref  Tagkey
+          Value:  !Sub  ${TagValuePrefix}-Subnet03
+
+## Subnet 04 -- web server 02
+  Subnet04:
+    Type:  AWS::EC2::VPC
+    Properties: 
+      VpcId:  !Ref  Vpc
+      AvailabilityZone:  !Select  [  1,  !Ref  AvailabilityZoneOption  ]
+      CidrBlock:  !Ref  Subnet04CidrBlock
+      Tags:
+        - Key:  !Ref  Tagkey
+          Value:  !Sub  ${TagValuePrefix}-Subnet04
+## Subnet 05 -- app server 01         
+  Subnet01:
+    Type:  AWS::EC2::VPC
+    Properties: 
+      VpcId:  !Ref  Vpc
+      AvailabilityZone:  !Select  [  0,  !Ref  AvailabilityZoneOption  ]
+      CidrBlock:  !Ref  Subnet05CidrBlock
+      Tags:
+        - Key:  !Ref  Tagkey
+          Value:  !Sub  ${TagValuePrefix}-Subnet05
+
+## Subnet 06 -- app server 02
+  Subnet01:
+    Type:  AWS::EC2::VPC
+    Properties: 
+      VpcId:  !Ref  Vpc
+      AvailabilityZone:  !Select  [  1,  !Ref  AvailabilityZoneOption  ]
+      CidrBlock:  !Ref  Subnet06CidrBlock
+      Tags:
+        - Key:  !Ref  Tagkey
+          Value:  !Sub  ${TagValuePrefix}-Subnet06
+## Subnet 07 -- Aurora 01         
+  Subnet01:
+    Type:  AWS::EC2::VPC
+    Properties: 
+      VpcId:  !Ref  Vpc
+      AvailabilityZone:  !Select  [  0,  !Ref  AvailabilityZoneOption  ]
+      CidrBlock:  !Ref  Subnet07CidrBlock
+      Tags:
+        - Key:  !Ref  Tagkey
+          Value:  !Sub  ${TagValuePrefix}-Subnet07
+
+## Subnet 08 -- Aurora 02
+  Subnet01:
+    Type:  AWS::EC2::VPC
+    Properties: 
+      VpcId:  !Ref  Vpc
+      AvailabilityZone:  !Select  [  1,  !Ref  AvailabilityZoneOption  ]
+      CidrBlock:  !Ref  Subnet08CidrBlock
+      Tags:
+        - Key:  !Ref  Tagkey
+          Value:  !Sub  ${TagValuePrefix}-Subnet08
+
+# RouteTables
+## RouteTable 01
+  RouteTable01:
+    Type:  AWS::EC2::RouteTable
+    Properties:
+      VpcId:  !Ref Vpc
+      Tags:
+        Name:  !Ref  Tagkey
+        Value:  !Ref  ${TagValuePrefix}-rtb01
+
+# RouteTable Route
+# RouteTable Route 01
+  RouteTableRoute01:
+    Type:  AWS::EC2::Route
+    Properties:
+      RouteTableId:  !Ref  RouteTable01
+      DestinationCidrBlock:  !Ref  PublicSubnetDestinationCidrBlock
+      GatewayId:  !Ref Igw01
+
+# RouteTable Associations
+# RouteTable Association 01
+  RouteTableAssociation01:
+    Type:  AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId:  !Ref  Subnet01
+      RouteTableId:  !Ref  RouteTable01
+
+# NACLs
+## NACL 01
+  Nacl01:
+    Type:  AWS::EC2::NaclAcl
+    Properties:
+    VpcId:  !Ref  Vpc
+    Tags:
+      - Key:  !Ref  Tagkey
+        Value:  !Sub  ${TagValuePrefix}-Nacl01
+## NACL 02
+  Nacl02:
+    Type:  AWS::EC2::NaclAcl
+    Properties:
+    VpcId:  !Ref  Vpc
+    Tags:
+      - Key:  !Ref  Tagkey
+        Value:  !Sub  ${TagValuePrefix}-Nacl02
+## NACL 03
+  Nacl03:
+    Type:  AWS::EC2::NaclAcl
+    Properties:
+    VpcId:  !Ref  Vpc
+    Tags:
+      - Key:  !Ref  Tagkey
+        Value:  !Sub  ${TagValuePrefix}-Nacl03
+## NACL 04
+  Nacl04:
+    Type:  AWS::EC2::NaclAcl
+    Properties:
+    VpcId:  !Ref  Vpc
+    Tags:
+      - Key:  !Ref  Tagkey
+        Value:  !Sub  ${TagValuePrefix}-Nacl04
+## NACL 05
+  Nacl05:
+    Type:  AWS::EC2::NaclAcl
+    Properties:
+    VpcId:  !Ref  Vpc
+    Tags:
+      - Key:  !Ref  Tagkey
+        Value:  !Sub  ${TagValuePrefix}-Nacl05
+## NACL 06
+  Nacl06:
+    Type:  AWS::EC2::NaclAcl
+    Properties:
+    VpcId:  !Ref  Vpc
+    Tags:
+      - Key:  !Ref  Tagkey
+        Value:  !Sub  ${TagValuePrefix}-Nacl06
+## NACL 07
+  Nacl07:
+    Type:  AWS::EC2::NaclAcl
+    Properties:
+    VpcId:  !Ref  Vpc
+    Tags:
+      - Key:  !Ref  Tagkey
+        Value:  !Sub  ${TagValuePrefix}-Nacl07
+## NACL 08
+  Nacl08:
+    Type:  AWS::EC2::NaclAcl
+    Properties:
+    VpcId:  !Ref  Vpc
+    Tags:
+      - Key:  !Ref  Tagkey
+        Value:  !Sub  ${TagValuePrefix}-Nacl08
+
+# NACL Entry
+# NACL Entry 01
+  NaclInbound01:
+    Type:  AWS::EC2::NetworkAclEntry
+    Properties:
+      NetworkAclId:  !Ref  Nacl01
+      RuleNumber:  32760
+      Protocol:  -1
+      RuleAction:  allow
+      CidrBlock:  0.0.0.0/0
+  NaclOutbound01:
+    Type:  AWS::EC2::NetworkAclEntry
+    Properties:
+      NetworkAclId:  !Ref  Nacl01
+      Egress:  true
+      RuleNumber:  32760
+      Protocol:  -1
+      RuleAction:  allow
+      CidrBlock:  0.0.0.0/0
+# NACL Entry 02
+  NaclInbound02:
+    Type:  AWS::EC2::NetworkAclEntry
+    Properties:
+      NetworkAclId:  !Ref  Nacl02
+      RuleNumber:  32760
+      Protocol:  -1
+      RuleAction:  allow
+      CidrBlock:  0.0.0.0/0
+  NaclOutbound02:
+    Type:  AWS::EC2::NetworkAclEntry
+    Properties:
+      NetworkAclId:  !Ref  Nacl02
+      Egress:  true
+      RuleNumber:  32760
+      Protocol:  -1
+      RuleAction:  allow
+      CidrBlock:  0.0.0.0/0
+# NACL Entry 03
+  NaclInbound02:
+    Type:  AWS::EC2::NetworkAclEntry
+    Properties:
+      NetworkAclId:  !Ref  Nacl03
+      RuleNumber:  32760
+      Protocol:  -1
+      RuleAction:  allow
+      CidrBlock:  0.0.0.0/0
+  NaclOutbound03:
+    Type:  AWS::EC2::NetworkAclEntry
+    Properties:
+      NetworkAclId:  !Ref  Nacl03
+      Egress:  true
+      RuleNumber:  32760
+      Protocol:  -1
+      RuleAction:  allow
+      CidrBlock:  0.0.0.0/0            
+# NACL Entry 04
+  NaclInbound04:
+    Type:  AWS::EC2::NetworkAclEntry
+    Properties:
+      NetworkAclId:  !Ref  Nacl04
+      RuleNumber:  32760
+      Protocol:  -1
+      RuleAction:  allow
+      CidrBlock:  0.0.0.0/0
+  NaclOutbound04:
+    Type:  AWS::EC2::NetworkAclEntry
+    Properties:
+      NetworkAclId:  !Ref  Nacl04
+      Egress:  true
+      RuleNumber:  32760
+      Protocol:  -1
+      RuleAction:  allow
+      CidrBlock:  0.0.0.0/0
+# NACL Entry 05
+  NaclInbound05:
+    Type:  AWS::EC2::NetworkAclEntry
+    Properties:
+      NetworkAclId:  !Ref  Nacl05
+      RuleNumber:  32760
+      Protocol:  -1
+      RuleAction:  allow
+      CidrBlock:  0.0.0.0/0
+  NaclOutbound05:
+    Type:  AWS::EC2::NetworkAclEntry
+    Properties:
+      NetworkAclId:  !Ref  Nacl05
+      Egress:  true
+      RuleNumber:  32760
+      Protocol:  -1
+      RuleAction:  allow
+      CidrBlock:  0.0.0.0/0
+# NACL Entry 06
+  NaclInbound06:
+    Type:  AWS::EC2::NetworkAclEntry
+    Properties:
+      NetworkAclId:  !Ref  Nacl06
+      RuleNumber:  32760
+      Protocol:  -1
+      RuleAction:  allow
+      CidrBlock:  0.0.0.0/0
+  NaclOutbound06:
+    Type:  AWS::EC2::NetworkAclEntry
+    Properties:
+      NetworkAclId:  !Ref  Nacl06
+      Egress:  true
+      RuleNumber:  32760
+      Protocol:  -1
+      RuleAction:  allow
+      CidrBlock:  0.0.0.0/0
+# NACL Entry 07
+  NaclInbound07:
+    Type:  AWS::EC2::NetworkAclEntry
+    Properties:
+      NetworkAclId:  !Ref  Nacl07
+      RuleNumber:  32760
+      Protocol:  -1
+      RuleAction:  allow
+      CidrBlock:  0.0.0.0/0
+  NaclOutbound07:
+    Type:  AWS::EC2::NetworkAclEntry
+    Properties:
+      NetworkAclId:  !Ref  Nacl07
+      Egress:  true
+      RuleNumber:  32760
+      Protocol:  -1
+      RuleAction:  allow
+      CidrBlock:  0.0.0.0/0      
+# NACL Entry 08
+  NaclInbound08:
+    Type:  AWS::EC2::NetworkAclEntry
+    Properties:
+      NetworkAclId:  !Ref  Nacl08
+      RuleNumber:  32760
+      Protocol:  -1
+      RuleAction:  allow
+      CidrBlock:  0.0.0.0/0
+  NaclOutbound08:
+    Type:  AWS::EC2::NetworkAclEntry
+    Properties:
+      NetworkAclId:  !Ref  Nacl08
+      Egress:  true
+      RuleNumber:  32760
+      Protocol:  -1
+      RuleAction:  allow
+      CidrBlock:  0.0.0.0/0
+
+# NACL Associations
+## NACL Associations 01
+  NaclAssociation01:
+    Type:  AWS::EC2::SubnetNetworkAclAssociation
+    Properties:
+      SubnetId:  !Ref  Subnet01
+      NetworkAclId:  !Ref  Nacl01
+## NACL Associations 02
+  NaclAssociation02:
+    Type:  AWS::EC2::SubnetNetworkAclAssociation
+    Properties:
+      SubnetId:  !Ref  Subnet02
+      NetworkAclId:  !Ref  Nacl02
+## NACL Associations 03
+  NaclAssociation03:
+    Type:  AWS::EC2::SubnetNetworkAclAssociation
+    Properties:
+      SubnetId:  !Ref  Subnet03
+      NetworkAclId:  !Ref  Nacl03
+## NACL Associations 04
+  NaclAssociation04:
+    Type:  AWS::EC2::SubnetNetworkAclAssociation
+    Properties:
+      SubnetId:  !Ref  Subnet04
+      NetworkAclId:  !Ref  Nacl04
+## NACL Associations 05
+  NaclAssociation05:
+    Type:  AWS::EC2::SubnetNetworkAclAssociation
+    Properties:
+      SubnetId:  !Ref  Subnet05
+      NetworkAclId:  !Ref  Nacl05
+## NACL Associations 06
+  NaclAssociation06:
+    Type:  AWS::EC2::SubnetNetworkAclAssociation
+    Properties:
+      SubnetId:  !Ref  Subnet06
+      NetworkAclId:  !Ref  Nacl06
+## NACL Associations 07
+  NaclAssociation07:
+    Type:  AWS::EC2::SubnetNetworkAclAssociation
+    Properties:
+      SubnetId:  !Ref  Subnet07
+      NetworkAclId:  !Ref  Nacl07
+## NACL Associations 08
+  NaclAssociation02:
+    Type:  AWS::EC2::SubnetNetworkAclAssociation
+    Properties:
+      SubnetId:  !Ref  Subnet08
+      NetworkAclId:  !Ref  Nacl08
+
+
+#---------------------------------#
+# Outputs Section
+#---------------------------------#
+Outputs:
+  VpcIdOutput:
+    Value:  !Ref  Vpc
+    Export:
+      Name:  !Sub  ${OutputPrefix}-Vpc
+  Subnet01Output:
+    Value:  !Ref Subnet01
+    Export:
+      Name:  !Sub  ${OutputPrefix}-Subnet01
+  Subnet02Output:
+    Value:  !Ref Subnet02
+    Export:
+      Name:  !Sub  ${OutputPrefix}-Subnet02      
+  Subnet03Output:
+    Value:  !Ref Subnet03
+    Export:
+      Name:  !Sub  ${OutputPrefix}-Subnet03
+  Subnet04Output:
+    Value:  !Ref Subnet04
+    Export:
+      Name:  !Sub  ${OutputPrefix}-Subnet04
+  Subnet05Output:
+    Value:  !Ref Subnet05
+    Export:
+      Name:  !Sub  ${OutputPrefix}-Subnet05
+  Subnet06Output:
+    Value:  !Ref Subnet06
+    Export:
+      Name:  !Sub  ${OutputPrefix}-Subnet06      
+  Subnet07Output:
+    Value:  !Ref Subnet07
+    Export:
+      Name:  !Sub  ${OutputPrefix}-Subnet07
+  Subnet08Output:
+    Value:  !Ref Subnet08
+    Export:
+      Name:  !Sub  ${OutputPrefix}-Subnet08            
