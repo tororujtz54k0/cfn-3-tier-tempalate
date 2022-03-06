@@ -30,7 +30,13 @@ Parameters:
     Default:  10.0.4.0/24
   Subnet06CidrBlock:
     Type:  String
-    Default:  10.0.5.0/24        
+    Default:  10.0.5.0/24
+  Subnet07CidrBlock:
+    Type:  String
+    Default:  10.0.6.0/24
+  Subnet08CidrBlock:
+    Type:  String
+    Default:  10.0.7.0/24
   TagValuePrefix:
     Type:  String
     Default:  my
@@ -85,6 +91,70 @@ Resources:
       Tags:
         - Key:  !Ref  Tagkey
           Value:  !Sub  ${TagValuePrefix}-Subnet02
+
+## Subnet 03 -- web server 01
+  Subnet03:
+    Type:  AWS::EC2::VPC
+    Properties: 
+      VpcId:  !Ref  Vpc
+      AvailabilityZone:  !Select  [  0,  !Ref  AvailabilityZoneOption  ]
+      CidrBlock:  !Ref  Subnet03CidrBlock
+      Tags:
+        - Key:  !Ref  Tagkey
+          Value:  !Sub  ${TagValuePrefix}-Subnet03
+
+## Subnet 04 -- web server 02
+  Subnet04:
+    Type:  AWS::EC2::VPC
+    Properties: 
+      VpcId:  !Ref  Vpc
+      AvailabilityZone:  !Select  [  1,  !Ref  AvailabilityZoneOption  ]
+      CidrBlock:  !Ref  Subnet04CidrBlock
+      Tags:
+        - Key:  !Ref  Tagkey
+          Value:  !Sub  ${TagValuePrefix}-Subnet04
+## Subnet 05 -- app server 01         
+  Subnet01:
+    Type:  AWS::EC2::VPC
+    Properties: 
+      VpcId:  !Ref  Vpc
+      AvailabilityZone:  !Select  [  0,  !Ref  AvailabilityZoneOption  ]
+      CidrBlock:  !Ref  Subnet05CidrBlock
+      Tags:
+        - Key:  !Ref  Tagkey
+          Value:  !Sub  ${TagValuePrefix}-Subnet05
+
+## Subnet 06 -- app server 02
+  Subnet01:
+    Type:  AWS::EC2::VPC
+    Properties: 
+      VpcId:  !Ref  Vpc
+      AvailabilityZone:  !Select  [  1,  !Ref  AvailabilityZoneOption  ]
+      CidrBlock:  !Ref  Subnet06CidrBlock
+      Tags:
+        - Key:  !Ref  Tagkey
+          Value:  !Sub  ${TagValuePrefix}-Subnet06
+## Subnet 07 -- Aurora 01         
+  Subnet01:
+    Type:  AWS::EC2::VPC
+    Properties: 
+      VpcId:  !Ref  Vpc
+      AvailabilityZone:  !Select  [  0,  !Ref  AvailabilityZoneOption  ]
+      CidrBlock:  !Ref  Subnet07CidrBlock
+      Tags:
+        - Key:  !Ref  Tagkey
+          Value:  !Sub  ${TagValuePrefix}-Subnet07
+
+## Subnet 08 -- Aurora 02
+  Subnet01:
+    Type:  AWS::EC2::VPC
+    Properties: 
+      VpcId:  !Ref  Vpc
+      AvailabilityZone:  !Select  [  1,  !Ref  AvailabilityZoneOption  ]
+      CidrBlock:  !Ref  Subnet08CidrBlock
+      Tags:
+        - Key:  !Ref  Tagkey
+          Value:  !Sub  ${TagValuePrefix}-Subnet08
 
 # RouteTables
 ## RouteTable 01
