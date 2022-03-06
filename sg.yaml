@@ -7,6 +7,9 @@ Parameters:
   HttpsPort:
     Type:  String
     Default:  443
+  HttpPort:
+    Type:  String
+    Default:  80
   TagKey:
     Type:  String
     Default:  Name
@@ -15,7 +18,8 @@ Parameters:
     Default:  my
   
 Resources:
-  AlSg01:
+# SG01 --ALB
+  AlbSg01:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription:  "SG for Alb01"
@@ -33,5 +37,43 @@ Resources:
       Tags:
         - Key:  !Ref  TagKey
           Value:  !Sub  ${TagValue} -alb-sg01
-          
+# SG02 Web Server#1
+  Ec2WebSg01:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription:  "SG for Ec2 Web 01"
+      SecurityGroupIngress:
+        - IpProtocol:  tcp
+          FromPort:  !Ref  HttpPort
+          ToPort:  !Ref  HttpPort
+          CidrIp:  !Ref  AllCidrIp
+      SecurityGroupEgress:
+        - IpProtocol:  tcp
+          FromPort:  !Ref  HttpPort
+          ToPort:  !Ref  HttpPort
+          SourceSecurityGroupId: !Ref  AlbSg01
+      VpcId:  !ImportValue  Vpc
+      Tags:
+        - Key:  !Ref  TagKey
+          Value:  !Sub  ${TagValue} -ec2-web-sg-01
+
+# SG03 Web Server#2
+  Ec2WebSg02:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription:  "SG for Ec2 Web 02"
+      SecurityGroupIngress:
+        - IpProtocol:  tcp
+          FromPort:  !Ref  HttpPort
+          ToPort:  !Ref  HttpPort
+          CidrIp:  !Ref  AllCidrIp
+      SecurityGroupEgress:
+        - IpProtocol:  tcp
+          FromPort:  !Ref  HttpPort
+          ToPort:  !Ref  HttpPort
+          SourceSecurityGroupId: !Ref  AlbSg01
+      VpcId:  !ImportValue  Vpc
+      Tags:
+        - Key:  !Ref  TagKey
+          Value:  !Sub  ${TagValue} -ec2-web-sg-02         
 Outputs:
