@@ -1,0 +1,11 @@
+AWSTemplateFormatVersion:  2010-09-09
+Description:  Template for Ec2 Incstances.
+Parameters:
+Resources:
+# EC201 -- Web Server#1
+# EC203 -- Web Server#2
+# EC203 -- App Server#1
+# EC204 -- App Server#2
+
+
+Outputs:
