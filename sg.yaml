@@ -22,7 +22,9 @@ Parameters:
   TagValue:
     Type:  String
     Default:  my
-  
+  OutputPrefix:
+    Type:  String
+    Default:  my
 Resources:
 # SG01 --ALB
   AlbSg01:
@@ -149,3 +151,27 @@ Resources:
         - Key:  !Ref  TagKey
           Value:  !Sub  ${TagValue} -ec2-app-sg-02
 Outputs:
+  AlbSg01:
+    Value:  !Ref  AlbSg01
+    Export:
+      Name:  !Sub  ${OutputPrefix}-AlbSg01
+  Ec2WebSg01:
+    Value:  !Ref  Ec2WebSg01
+    Export:
+      Name:  !Sub  ${OutputPrefix}-Ec2WebSg01
+  Ec2WebSg02:
+    Value:  !Ref  Ec2WebSg02
+    Export:
+      Name:  !Sub  ${OutputPrefix}-Ec2WebSg02
+  Ec2AppSg01:
+    Value:  !Ref  Ec2AppSg01
+    Export:
+      Name:  !Sub  ${OutputPrefix}-Ec2AppSg01      
+  Ec2AppSg02:
+    Value:  !Ref  Ec2AppSg02
+    Export:
+      Name:  !Sub  ${OutputPrefix}-Ec2AppSg02
+  AurorabSg:
+    Value:  !Ref  AurorabSg
+    Export:
+      Name:  !Sub  ${OutputPrefix}-AurorabSg
