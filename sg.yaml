@@ -10,9 +10,6 @@ Parameters:
   HttpPort:
     Type:  String
     Default:  80
-    HttpPort:
-    Type:  String
-    Default:  80
   MySqlPort:
     Type:  String
     Default:  3306
