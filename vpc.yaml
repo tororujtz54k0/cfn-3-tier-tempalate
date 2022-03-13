@@ -164,7 +164,7 @@ Resources:
       VpcId:  !Ref Vpc
       Tags:
         Name:  !Ref  Tagkey
-        Value:  !Ref  ${TagValuePrefix}-rtb01
+        Value:  !Sub  ${TagValuePrefix}-rtb01
 
 # RouteTable Route
 # RouteTable Route 01
