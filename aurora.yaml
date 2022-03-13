@@ -54,5 +54,5 @@ Resources:
       DBSubnetGroupDescription: Aurora MySQL SubnetGroup
       SubnetIds:
         - !ImportValue my-Subnet07
-        - !ImportValue my-Subnet08       
+        - !ImportValue my-Subnet08
 # Outputs:
