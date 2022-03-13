@@ -160,23 +160,31 @@ Resources:
 
 # RouteTables
 ## RouteTable 01
-  RouteTable01:
+  PublicRouteTable:
     Type:  AWS::EC2::RouteTable
     Properties:
       VpcId:  !Ref Vpc
       Tags:
         Name:  !Ref  Tagkey
-        Value:  !Sub  ${TagValuePrefix}-rtb01
+        Value:  !Sub  ${TagValuePrefix}-public-rtb
+
+  PrivateRouteTable:
+    Type:  AWS::EC2::RouteTable
+    Properties:
+      VpcId:  !Ref Vpc
+      Tags:
+        Name:  !Ref  Tagkey
+        Value:  !Sub  ${TagValuePrefix}-private-rtb
 
 # RouteTable Route
 # RouteTable Route 01
-  RouteTableRoute01:
+  PublicRouteTableRoute:
     Type:  AWS::EC2::Route
     Properties:
-      RouteTableId:  !Ref  RouteTable01
+      RouteTableId:  !Ref  PublicRouteTable
       DestinationCidrBlock:  !Ref  PublicSubnetDestinationCidrBlock
       GatewayId:  !Ref Igw01
-
+      
 # RouteTable Associations
 # RouteTable Association 01
   RouteTableAssociation01:
