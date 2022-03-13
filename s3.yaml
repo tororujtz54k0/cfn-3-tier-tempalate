@@ -1,0 +1,24 @@
+AWSTemplateFormatVersion:  2010-09-09
+Description:  Template for S3.
+Parameters:
+  BucketName01:
+    Type: String
+    Default:  my-s3-bucket-01
+  ExportPrefix:
+    Type:  String
+    Default:  my
+Resources:
+#S3 Bucket01
+  S3buacket01:
+    Type:  AWS::S3::Bucket
+    Properties:
+      BucketName:  !Ref BucketName01
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256      
+# Outputs:
+  S3buacket01:
+    Value:  !Ref  S3buacket01
+    Export:
+      Name:  !Sub  ${ExportPrefix}-S3buacket01
