@@ -62,6 +62,7 @@ Resources:
       Tags:
         - Key:  !Ref  Tagkey
           Value:  !Sub  ${TagValuePrefix}-vpc
+
 # Internet Gateway
   Igw01:
     Type:  AWS::EC2::InternetGateway
@@ -69,10 +70,11 @@ Resources:
       Tags:
         - Key:  !Ref  Tagkey
           Value:  !Sub  ${TagValuePrefix}-igw01
+
 # Subnets
 ## Subnet 01 -- alb
   Subnet01:
-    Type:  AWS::EC2::VPC
+    Type:  AWS::EC2::Subnet
     Properties:
       VpcId:  !Ref  Vpc
       AvailabilityZone:  !Select  [  0,  !Ref  AvailabilityZoneOption  ]
@@ -83,7 +85,7 @@ Resources:
 
 ## Subnet 02 -- alb
   Subnet02:
-    Type:  AWS::EC2::VPC
+    Type:  AWS::EC2::Subnet
     Properties: 
       VpcId:  !Ref  Vpc
       AvailabilityZone:  !Select  [  1,  !Ref  AvailabilityZoneOption  ]
@@ -94,7 +96,7 @@ Resources:
 
 ## Subnet 03 -- web server 01
   Subnet03:
-    Type:  AWS::EC2::VPC
+    Type:  AWS::EC2::Subnet
     Properties: 
       VpcId:  !Ref  Vpc
       AvailabilityZone:  !Select  [  0,  !Ref  AvailabilityZoneOption  ]
@@ -105,7 +107,7 @@ Resources:
 
 ## Subnet 04 -- web server 02
   Subnet04:
-    Type:  AWS::EC2::VPC
+    Type:  AWS::EC2::Subnet
     Properties: 
       VpcId:  !Ref  Vpc
       AvailabilityZone:  !Select  [  1,  !Ref  AvailabilityZoneOption  ]
@@ -115,7 +117,7 @@ Resources:
           Value:  !Sub  ${TagValuePrefix}-Subnet04
 ## Subnet 05 -- app server 01         
   Subnet05:
-    Type:  AWS::EC2::VPC
+    Type:  AWS::EC2::Subnet
     Properties: 
       VpcId:  !Ref  Vpc
       AvailabilityZone:  !Select  [  0,  !Ref  AvailabilityZoneOption  ]
@@ -126,7 +128,7 @@ Resources:
 
 ## Subnet 06 -- app server 02
   Subnet06:
-    Type:  AWS::EC2::VPC
+    Type:  AWS::EC2::Subnet
     Properties: 
       VpcId:  !Ref  Vpc
       AvailabilityZone:  !Select  [  1,  !Ref  AvailabilityZoneOption  ]
@@ -136,7 +138,7 @@ Resources:
           Value:  !Sub  ${TagValuePrefix}-Subnet06
 ## Subnet 07 -- Aurora 01         
   Subnet07:
-    Type:  AWS::EC2::VPC
+    Type:  AWS::EC2::Subnet
     Properties: 
       VpcId:  !Ref  Vpc
       AvailabilityZone:  !Select  [  0,  !Ref  AvailabilityZoneOption  ]
@@ -147,7 +149,7 @@ Resources:
 
 ## Subnet 08 -- Aurora 02
   Subnet08:
-    Type:  AWS::EC2::VPC
+    Type:  AWS::EC2::Subnet
     Properties: 
       VpcId:  !Ref  Vpc
       AvailabilityZone:  !Select  [  1,  !Ref  AvailabilityZoneOption  ]
