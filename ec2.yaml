@@ -22,6 +22,10 @@ Parameters:
   OutputPrefix:
     Type:  String
     Default:  my
+
+#------------------------------------------
+# EC2 Instances
+#------------------------------------------
 Resources:
 # EC201 -- Web Server#1
   EC201:
@@ -38,7 +42,7 @@ Resources:
           Ebs:
             VolumeSize:  !Select  [  0,  !Ref  VolumeSizeOption  ]
             VolumeType:  io1
-            DeleteOnTermination: true            
+            DeleteOnTermination: true
       DisableApiTermination:  false
       # IamInstanceProfile:  !Ref
       ImageId:  !Select  [  0,  !Ref  ImageIdOption  ]
@@ -51,6 +55,7 @@ Resources:
       Tags:
         - Key:  !Ref  TagKey
           Value:  !Sub  ${TagValue}-ec2-web-c-01
+
 # EC202 -- Web Server#2
   EC202:
     Type:  AWS::EC2::Instance
@@ -79,6 +84,7 @@ Resources:
       Tags:
         - Key:  !Ref  TagKey
           Value:  !Sub  ${TagValue}-ec2-web-a-02
+
 # EC203 -- App Server#1
   EC203:
     Type:  AWS::EC2::Instance
@@ -107,6 +113,7 @@ Resources:
       Tags:
         - Key:  !Ref  TagKey
           Value:  !Sub  ${TagValue}-ec2-app-c-01
+
 # EC204 -- App Server#2
   EC204:
     Type:  AWS::EC2::Instance
