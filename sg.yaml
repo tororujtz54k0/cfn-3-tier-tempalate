@@ -22,6 +22,10 @@ Parameters:
   OutputPrefix:
     Type:  String
     Default:  my
+    
+#---------------------------------#
+# Resources Section
+#---------------------------------#
 Resources:
 # SG01 --ALB
   AlbSg01:
