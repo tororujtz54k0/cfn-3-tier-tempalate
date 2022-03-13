@@ -168,14 +168,6 @@ Resources:
         Name:  !Ref  Tagkey
         Value:  !Sub  ${TagValuePrefix}-public-rtb
 
-  PrivateRouteTable:
-    Type:  AWS::EC2::RouteTable
-    Properties:
-      VpcId:  !Ref Vpc
-      Tags:
-        Name:  !Ref  Tagkey
-        Value:  !Sub  ${TagValuePrefix}-private-rtb
-
 # RouteTable Route
 # RouteTable Route 01
   PublicRouteTableRoute:
@@ -191,7 +183,7 @@ Resources:
     Type:  AWS::EC2::SubnetRouteTableAssociation
     Properties:
       SubnetId:  !Ref  Subnet01
-      RouteTableId:  !Ref  RouteTable01
+      RouteTableId:  !Ref  PublicRouteTable
 
 # NACLs
 ## NACL 01
