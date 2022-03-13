@@ -46,8 +46,7 @@ Parameters:
   OutputPrefix:
     Type:  String
     Default:  my
-  
-
+    
 #---------------------------------#
 # Resources Section
 #---------------------------------#
@@ -70,6 +69,12 @@ Resources:
       Tags:
         - Key:  !Ref  Tagkey
           Value:  !Sub  ${TagValuePrefix}-igw01
+
+  InternetGatewayAttachment: 
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties: 
+      InternetGatewayId: !Ref Igw01
+      VpcId: !Ref Vpc
 
 # Subnets
 ## Subnet 01 -- alb
@@ -479,7 +484,7 @@ Outputs:
   Subnet06Output:
     Value:  !Ref Subnet06
     Export:
-      Name:  !Sub  ${OutputPrefix}-Subnet06      
+      Name:  !Sub  ${OutputPrefix}-Subnet06
   Subnet07Output:
     Value:  !Ref Subnet07
     Export:
@@ -487,4 +492,4 @@ Outputs:
   Subnet08Output:
     Value:  !Ref Subnet08
     Export:
-      Name:  !Sub  ${OutputPrefix}-Subnet08            
+      Name:  !Sub  ${OutputPrefix}-Subnet08
