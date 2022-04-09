@@ -1,0 +1,218 @@
+AWSTemplateFormatVersion:  2010-09-09
+Description:  Template for ECS.
+
+
+#=======================
+# Parameter Section
+#=======================
+Parameters:
+  LaunchType:
+    Type:  String
+    Default:  FARGATE
+  ECSServiceName:
+    Type:  String
+    Default:  my-ECS
+#=======================
+# Resource Section
+#=======================
+Resources:
+  ECSTaskExecutionRole:
+    Type:  AWS::IAM::Role
+    Properties:
+      RoleName:
+      Path:  /
+      AssumeRolePolicyDocument:
+        Version:  2012-10-17
+        Statement:
+          - Effefct:  Allow
+            Principal:
+              Service:  ecs-tasks.amazonaws.com
+            Action:  sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
+
+  ContainerDefinitions:
+    - Name: !Sub "${ProjectName}-${ECSContainerName}"
+      Image: !Ref ECSImageName
+      LogConfiguration:
+        LogDriver: awslogs
+        Options:
+          awslogs-group: !Ref ECSLogGroup
+          awslogs-region: !Ref "AWS::Region"
+          awslogs-stream-prefix: !Ref ProjectName
+      MemoryReservation: 128
+      PortMappings:
+        - HostPort: 80
+          Protocol: tcp
+          ContainerPort: 80
+
+  ECSTaskDefinition:
+    Type:  AWS::ECS::TaskDefinition
+    Properties:
+      Cpu:  !Ref  
+      ExecutionRoleArn:  !Ref  ECSTaskExecutionRole
+      Family:  !Sub  
+      Memory:  !Ref  ECSTaskMemory
+      NetworkMode:  awsvpc
+      RequiresCompatibilities:
+        - FARGATE
+  ECSService:
+    Type:  AWS::ECS::Service
+    Properties:
+      # CapacityProviderStrategy: 
+      #   - CapacityProviderStrategyItem
+      Cluster:  !Ref  ECSCluster
+      # DeploymentConfiguration: 
+      #   DeploymentConfiguration
+      # DeploymentController: 
+      #   DeploymentController
+      DesiredCount:  !Ref  ECSTaskDesiredCount
+      # EnableECSManagedTags: Boolean
+      # EnableExecuteCommand: Boolean
+      # HealthCheckGracePeriodSeconds: Integer
+      LaunchType:  !Ref  LaunchType
+      LoadBalancers: 
+        - 
+          TargetGroupArn:  !Ref  TargetGroup
+          ContainerPort:  80
+          ContainerName:  !Sub  ${ProjectName}-${ECSContainerName}
+      NetworkConfiguration: 
+        AwsvpsConfiguration:
+          AssignPublicIp:  DISABLED
+          SecurityGroups:
+            - !ImportValue  EcsSgId
+          Subnets:
+            - !ImportValue:  Subnet01
+            - !ImportValue:  Subnet02
+      # PlacementConstraints: 
+      #   - PlacementConstraint
+      # PlacementStrategies: 
+      #   - PlacementStrategy
+      # PlatformVersion: String
+      # PropagateTags: String
+      # Role: String
+      # SchedulingStrategy: String
+      ServiceName:  !Ref  ECSServiceName
+      # ServiceRegistries: 
+      #   - ServiceRegistry
+      Tags: 
+        - Key:  Name
+          Value:  !Sub  ${ProjectName}-${Service}
+      TaskDefinition:  !Ref  ECSTaskDefinition
+
+  ServiceAutoScalingRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: application-autoscaling.amazonaws.com
+            Action: sts:AssumeRole
+      Path: /
+      Policies:
+        - PolicyName: !Sub "${ProjectName}-${ECSContainerName}-autoscaling"
+          PolicyDocument:
+            Statement:
+              - Effect: Allow
+                Action:
+                  - application-autoscaling:*
+                  - cloudwatch:DescribeAlarms
+                  - cloudwatch:PutMetricAlarm
+                  - ecs:DescribeServices
+                  - ecs:UpdateService
+                Resource: '*'
+
+  ServiceScalingTarget:
+    Type: AWS::ApplicationAutoScaling::ScalableTarget
+    Properties:
+      MinCapacity: !Ref TaskMinContainerCount
+      MaxCapacity: !Ref TaskMaxContainerCount
+      ResourceId: !Sub
+        - service/${EcsClusterName}/${EcsDefaultServiceName}
+        - EcsClusterName: !Ref ECSCluster
+          EcsDefaultServiceName: !Sub "${ProjectName}-${ECSServiceName}"
+      RoleARN: !GetAtt ServiceAutoScalingRole.Arn
+      ScalableDimension: ecs:service:DesiredCount
+      ServiceNamespace: ecs
+    DependsOn:
+      - ECSService
+      - ServiceAutoScalingRole
+
+  ServiceScaleOutPolicy:
+    Type: AWS::ApplicationAutoScaling::ScalingPolicy
+    Properties:
+      PolicyName: !Sub "${ProjectName}-${ECSServiceName}-ScaleOutPolicy"
+      PolicyType: StepScaling
+      ScalingTargetId: !Ref ServiceScalingTarget
+      StepScalingPolicyConfiguration:
+        AdjustmentType: ChangeInCapacity
+        Cooldown: 60
+        MetricAggregationType: Average
+        StepAdjustments:
+          - ScalingAdjustment: 1
+            MetricIntervalLowerBound: 0
+    DependsOn: ServiceScalingTarget
+
+  ServiceScaleInPolicy:
+    Type: AWS::ApplicationAutoScaling::ScalingPolicy
+    Properties:
+      PolicyName: !Sub "${ProjectName}-${ECSServiceName}-ScaleInPolicy"
+      PolicyType: StepScaling
+      ScalingTargetId: !Ref ServiceScalingTarget
+      StepScalingPolicyConfiguration:
+        AdjustmentType: ChangeInCapacity
+        Cooldown: 60
+        MetricAggregationType: Average
+        StepAdjustments:
+          - ScalingAdjustment: -1
+            MetricIntervalUpperBound: 0
+    DependsOn: ServiceScalingTarget
+
+  ServiceScaleOutAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub "${ProjectName}-${ECSServiceName}-ScaleOutAlarm"
+      EvaluationPeriods: !Ref ServiceScaleEvaluationPeriods
+      Statistic: Average
+      TreatMissingData: notBreaching
+      Threshold: !Ref ServiceCpuScaleOutThreshold
+      AlarmDescription: Alarm to add capacity if CPU is high
+      Period: 60
+      AlarmActions:
+        - !Ref ServiceScaleOutPolicy
+      Namespace: AWS/ECS
+      Dimensions:
+        - Name: ClusterName
+          Value: !Ref ECSCluster
+        - Name: ServiceName
+          Value: !Sub "${ProjectName}-${ECSServiceName}"
+      ComparisonOperator: GreaterThanThreshold
+      MetricName: CPUUtilization
+    DependsOn:
+      - ECSService
+      - ServiceScaleOutPolicy
+
+  ServiceScaleInAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub "${ProjectName}-${ECSServiceName}-ScaleInAlarm"
+      EvaluationPeriods: !Ref ServiceScaleEvaluationPeriods
+      Statistic: Average
+      TreatMissingData: notBreaching
+      Threshold: !Ref ServiceCpuScaleInThreshold
+      AlarmDescription: Alarm to reduce capacity if container CPU is low
+      Period: 300
+      AlarmActions:
+        - !Ref ServiceScaleInPolicy
+      Namespace: AWS/ECS
+      Dimensions:
+        - Name: ClusterName
+          Value: !Ref ECSCluster
+        - Name: ServiceName
+          Value: !Sub "${ProjectName}-${ECSServiceName}"
+      ComparisonOperator: LessThanThreshold
+      MetricName: CPUUtilization
+    DependsOn:
+      - ECSService
+      - ServiceScaleInPolicy
